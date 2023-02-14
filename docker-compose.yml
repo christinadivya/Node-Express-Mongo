@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+  service:
+    image: "optisolbusiness/node-express-service"
+
+    # Expose ports [HOST:CONTAINER}
+    ports:
+      - "4050:4050"
+
+    # Set environment variables from this file
+    # env_file:
+    #   - .env
+
+    # Overwrite any env var defined in .env file (if required)
+    environment:
+      - MONGO_HOST=mongodb://localhost:27017/mydatabase
+      - NODE_ENV=test
+      - APP_URL=http://localhost
+      - WEB_PORT=80
+      - SERVICE_PORT=4050
+    # Link to containers in another service.
+    # Links also express dependency between services in the same way as depends_on,
+    # so they determine the order of service startup.
+    links:
+      - mongo
+  web:
+    image: "optisolbusiness/node-express-frontend"
+    ports:
+      - "80:80"
+
+  mongo:
+    image: "mongo:3.4.2"
+    ports:
+      - "27017:27017"
+    volumes:
+      - /home/ubuntu/Documents/Node-express/mongo-data:/data/db
